@@ -7,8 +7,12 @@ const addSchema = Joi.object({
     name: Joi.string().required().messages({
         'any.required': 'missing required name field'
     }),
-    email: Joi.string(),
-    phone: Joi.string(),
+    email: Joi.string().required().messages({
+        'any.required': 'missing required email field'
+    }),
+    phone: Joi.string().required().messages({
+        'any.required': 'missing required phone field'
+    }),
     favorite: Joi.boolean(),
 }).options({abortEarly : false})
 
@@ -25,18 +29,23 @@ const contactSchema = new Schema({
     },
 
     email: {
-        type: String
+        type: String,
+        required: [true, 'Set email for contact']
     },
 
     phone: {
-        type: String
+        type: String,
+        required: [true, 'Set phone for contact']
     },
     favorite: {
         type: Boolean,
         default: false
     }
 },
-    // {versionKey: false, timestamps: true}
+    {
+        versionKey: false,
+        // timestamps: true
+    }
 );
 
 const schemas = {
