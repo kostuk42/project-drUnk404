@@ -1,13 +1,17 @@
-const contacts = require("../models/contacts");
+
 const {HttpError} = require("../helpers");
 const {ctrlWrapper} = require("../helpers/ctrlWrapper");
+
+const {Contact} = require('../models/contact');
+
 const getAll = async (req, res) => {
-    const result = await contacts.listContacts();
+    const result = await Contact.find();
     res.json(result)
 }
 
 const getById = async (req, res) => {
-    const result = await contacts.getContactById(req.params.contactId);
+    const { contactId } = req.params;
+    const result = await Contact.findOne({ _id: contactId });
     if (!result) {
         throw HttpError(404, `Contact with id=${req.params.contactId} not found`);
     }
@@ -15,12 +19,12 @@ const getById = async (req, res) => {
 }
 
 const add = async (req, res) => {
-    const result = await contacts.addContact(req.body);
+    const result = await Contact.create(req.body);
     res.status(201).json(result)
 }
 
 const remove = async (req, res) => {
-    const result = await contacts.removeContact(req.params.contactId);
+    const result = await Contact.findByIdAndDelete(req.params.contactId);
     if (!result) {
         throw HttpError(404, `Contact with id=${req.params.contactId} not found`);
     }
@@ -28,7 +32,15 @@ const remove = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    const result = await contacts.updateContact(req.params.contactId, req.body);
+    const result = await Contact.findByIdAndUpdate(req.params.contactId, req.body, {new: true});
+    if (!result) {
+        throw HttpError(404, `Contact with id=${req.params.contactId} not found`);
+    }
+    res.json(result)
+}
+
+const updateStatus = async (req, res) => {
+    const result = await Contact.findByIdAndUpdate(req.params.contactId, req.body, {new: true});
     if (!result) {
         throw HttpError(404, `Contact with id=${req.params.contactId} not found`);
     }
@@ -40,5 +52,6 @@ module.exports = {
     getById: ctrlWrapper(getById),
     add: ctrlWrapper(add),
     remove: ctrlWrapper(remove),
-    update: ctrlWrapper(update)
+    update: ctrlWrapper(update),
+    updateStatus: ctrlWrapper(updateStatus),
 }
