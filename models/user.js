@@ -34,6 +34,14 @@ const userSchema = new Schema({
         type: String,
         default: null
     },
+    verify: {
+        type: Boolean,
+        default: false
+    },
+    verificationToken: {
+        type: String,
+        required: [true, 'Verify token is required']
+    }
 }, {
     versionKey: false,
     // timestamps: true
@@ -81,10 +89,21 @@ const loginJoiSchema = Joi.object({
     }),
 }).options({abortEarly : false});
 
+const emailJoiSchema = Joi.object({
+    email: Joi.string()
+        .pattern(emailRegexp).messages({
+            'string.pattern.base': 'invalid email format'
+        })
+        .required().messages({
+        'any.required': 'missing required email field'
+    })
+});
+
 
 const schemas = {
     registerJoiSchema,
-    loginJoiSchema
+    loginJoiSchema,
+    emailJoiSchema
 }
 
 module.exports = {
