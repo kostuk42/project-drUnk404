@@ -4,7 +4,7 @@ const {authenticate} = require('../../middlewares');
 
 const router = express.Router();
 
-router.use(authenticate);
+// router.use(authenticate);
 
 router.get('/categories', getAllCategories);
 router.get('/glasses', getAllGlasses);
