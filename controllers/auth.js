@@ -127,6 +127,17 @@ const updateAvatar = async (req, res) => {
         res.json({avatarURL});
 }
 
+// example of avatar controller
+const saveAvatar = async (req, res) => {
+    // the path is src to the image and should be saved in the db with a user it belongs to.
+    const url = req.file.path;
+    console.log("file url:")
+    console.log(url);
+    res.json({
+        message: "Image saved successfully"
+    })
+}
+
 module.exports = {
     register: ctrlWrapper(register),
     login: ctrlWrapper(login),
@@ -135,4 +146,5 @@ module.exports = {
     updateAvatar: ctrlWrapper(updateAvatar),
     verifyEmail: ctrlWrapper(verifyEmail),
     resendVerifyEmail: ctrlWrapper(resendVerifyEmail),
+    saveAvatar: ctrlWrapper(saveAvatar),
 }

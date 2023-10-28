@@ -3,7 +3,7 @@ const authenticate = require('../../middlewares/authenticate');
 const upload = require('../../middlewares/upload');
 const router = express.Router();
 
-const {register, login, getCurrent, logout, updateAvatar, verifyEmail, resendVerifyEmail} = require('../../controllers/auth');
+const {register, login, getCurrent, logout, updateAvatar, verifyEmail, resendVerifyEmail, saveAvatar} = require('../../controllers/auth');
 const {validateBody} = require('../../middlewares');
 const {schemas} = require('../../models/user');
 
@@ -21,5 +21,7 @@ router.get('/current', authenticate, getCurrent);
 router.post('/logout', authenticate, logout);
 
 router.patch('/avatars', authenticate, upload.single('avatar'), updateAvatar);
+// the route example to demonstrate how to use cloudinary. You should remove it or change as necessary.
+router.post('/avatars', upload.single('avatar'), saveAvatar);
 
 module.exports = router;
