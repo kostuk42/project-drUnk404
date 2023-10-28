@@ -3,7 +3,7 @@ const authenticate = require('../../middlewares/authenticate');
 const upload = require('../../middlewares/upload');
 const router = express.Router();
 
-const {register, login, getCurrent, logout, updateAvatar, verifyEmail, resendVerifyEmail, saveAvatar} = require('../../controllers/auth');
+const {register, login, logout, updateAvatar, verifyEmail, resendVerifyEmail, saveAvatar} = require('../../controllers/auth');
 const {validateBody} = require('../../middlewares');
 const {schemas} = require('../../models/user');
 
@@ -15,8 +15,6 @@ router.get('/verify/:verificationToken', verifyEmail);
 router.post('/verify', validateBody(schemas.emailJoiSchema), resendVerifyEmail);
 
 router.post('/login', validateBody(schemas.loginJoiSchema), login);
-
-router.get('/current', authenticate, getCurrent);
 
 router.post('/logout', authenticate, logout);
 
