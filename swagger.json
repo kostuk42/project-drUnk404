@@ -504,80 +504,6 @@
         }
       }
     },
-    "/cocktails/search": {
-      "get": {
-        "summary": "Get cocktails by category, ingredient, and search query",
-        "tags": [
-          "Drinks"
-        ],
-        "security": [
-          {
-            "Bearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "required": true,
-            "type": "integer",
-            "description": "Page number for pagination"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "required": true,
-            "type": "integer",
-            "description": "Number of cocktails per page"
-          },
-          {
-            "name": "ingredient",
-            "in": "query",
-            "type": "string",
-            "description": "Ingredient to filter by"
-          },
-          {
-            "name": "category",
-            "in": "query",
-            "type": "string",
-            "description": "Category to filter by"
-          },
-          {
-            "name": "searchQuery",
-            "in": "query",
-            "type": "string",
-            "description": "Search query to filter by"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful retrieval of cocktails by category, ingredient, and search query",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Recipe"
-                      }
-                    },
-                    "total": {
-                      "type": "integer",
-                      "description": "Total number of matching recipes"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      }
-    },
     "/drinks/{id}": {
       "get": {
         "summary": "Get cocktail by ID",
@@ -689,7 +615,7 @@
       "get": {
         "summary": "Get user's custom cocktails",
         "tags": [
-          "Cocktails"
+          "Drinks"
         ],
         "security": [
           {
@@ -787,7 +713,7 @@
       "get": {
         "summary": "Get user's favorite cocktails",
         "tags": [
-          "Cocktails"
+          "Drinks"
         ],
         "security": [
           {
