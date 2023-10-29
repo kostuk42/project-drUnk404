@@ -4,9 +4,25 @@ const { ctrlWrapper, isUserAdult } = require("../helpers")
 const getAllDrinksMainPage = async (req, res) => {
     const birthDate = req.user.birthDate
     const userIsAdult = isUserAdult(birthDate)
-    const findOptions = userIsAdult ? {} : {alcoholic:"Non alcoholic"}
-    const data = await Recipe.find(findOptions);
-    res.status(200).json({data})
+    
+    const categories = await Recipe.distinct("category");
+
+    const randomCocktails = [];
+
+    for (const category of categories) {
+        const cocktails = await Recipe.aggregate([
+            { $match: userIsAdult ? { category: category } : { category: category, alcoholic: "Non alcoholic" } },
+        { $sample: { size: 3 } }
+        ]);
+        
+    randomCocktails.push(...cocktails);
+}
+
+    const categorizedCocktails = categories.map(category => {
+    const categoryCocktails = randomCocktails.filter(cocktail => cocktail.category === category);
+    return {[category]: categoryCocktails}; });
+
+    res.status(200).json({data:categorizedCocktails})
 }
 
 const getFilteredDrinks = async (req, res) => {
