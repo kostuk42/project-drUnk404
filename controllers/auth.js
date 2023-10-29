@@ -15,8 +15,9 @@ const avatarsDir = path.join(__dirname, '../', 'public', 'avatars');
 
 const register = async (req, res) => {
     const {email, password} = req.body;
+    console.log(email);
     const user = await User.findOne({email});
-
+    
     const avatarURL = gravatar.url(email, {s: '250'}, true);
 
     const verificationToken = nanoid();
@@ -94,7 +95,7 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: '23h'});
-    const {subscription} = await User.findByIdAndUpdate(user._id, {token});
+    const { subscription } = await User.findByIdAndUpdate(user._id, { token });
 
     res.json({
         user: {email, subscription},

@@ -21,6 +21,10 @@ const userSchema = new Schema({
         minLength: 6,
         required: [true, 'Set password for user']
     },
+    birthDate: {
+        type: Date,
+        required: [true, 'Set date of birth for user']
+    },
     subscription: {
         type: Boolean,
         default: false,
@@ -67,7 +71,7 @@ const registerJoiSchema = Joi.object({
     }).min(6).messages({
         'string.min': 'password must be at least 6 characters long'
     }),
-
+    birthDate: Joi.date().required(),
     subscription: Joi.string().valid('starter', 'pro', 'business').default('starter'),
     token: Joi.string().default(null)
 }).options({abortEarly : false});

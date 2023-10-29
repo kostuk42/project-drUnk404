@@ -1,10 +1,11 @@
 const { User } = require('../models/user');
-const { HttpError, sendEmail, checkUpdateUserBody} = require("../helpers");
+const { HttpError, sendEmail} = require("../helpers");
 const { ctrlWrapper } = require("../helpers/ctrlWrapper")
 
 const getCurrent = async (req, res) => {
-    const {email, avatarURL} = req.user; // update to {username, avatarURL} when the model User will be created correctly
-    res.json({email, avatarURL})
+    const currentUser = req.user.toObject()
+    delete currentUser.password;
+    res.status(200).json(currentUser)
 }
 
 const sendSubscriptionEmail = async (req, res) => {
@@ -28,27 +29,22 @@ const sendSubscriptionEmail = async (req, res) => {
     user.subscription = true
     await user.save()
 
-    res.json({
+    res.status(200).json({
         message: 'Subscription Successful!'
     })
 }
 
 const userUpdate = async (req, res) => {
 
-    const updateAvatar = checkUpdateUserBody(req.body.username, req.file)
+    const user = await User.findById(req.user.id);
+    
+    const newAvatarURL = req.file ? req.file.path : user.avatarURL;
+    const newUsername = req.body.username ? req.body.username : user.username;
 
-    if (updateAvatar) {
-        const newAvatarURL = req.file.path;
-        const user = await User.findById(req.user.id);
-        user.avatarURL = newAvatarURL;
-        await user.save();
-    } else {
-        const newUsername = req.body.username
-        const user = await User.findById(req.user.id);
-        user.username = newUsername;
-        await user.save();
-    }
+    user.avatarURL = newAvatarURL;
+    user.username = newUsername;
 
+    await user.save();
     res.status(200).json({
         message: 'User successfully updated.'
     });
