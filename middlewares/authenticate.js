@@ -1,27 +1,28 @@
-const {HttpError} = require("../helpers");
-const jwt = require('jsonwebtoken');
-const {User} = require('../models/user');
-
-require('dotenv').config();
-const {SECRET_KEY} = process.env;
+const { HttpError } = require("../helpers");
+const jwt = require("jsonwebtoken");
+const { User } = require("../models/user");
 
 const authenticate = async (req, res, next) => {
-    const {authorization = ''} = req.headers;
-    const [bearer, token] = authorization.split(' ');
-    if (bearer !== 'Bearer') {
-        next(HttpError(401, 'Not authorized'));
+  try {
+    const token =
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer") &&
+      req.headers.authorization.split("Bearer").join("").trim();
+    const verify = jwt.verify(token, process.env.SECRET_KEY);
+
+    const { _id } = verify;
+
+    const user = await User.findOne({ _id });
+
+    if (!user || token !== user.token) {
+      throw HttpError(400, "");
     }
-    try {
-        const {id} = jwt.verify(token, SECRET_KEY);
-        const user = await User.findById(id);
-        if(!user || user.token !== token || !user.token ) {
-            next(HttpError(401, 'Not authorized'));
-        }
-        req.user = user;
-        next();
-    } catch (error) {
-        next(HttpError(401, 'Not authorized'));
-    }
-}
+
+    req.user = user;
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = authenticate;
