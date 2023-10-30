@@ -11,17 +11,21 @@ const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short'
 
 const authRouter = require('./routes/api/auth');
 const filtersRouter = require('./routes/api/filters');
+const usersRouter = require('./routes/api/users');
+const drinksRouter = require('./routes/api/drinks');
 
 app.use(logger(formatsLogger))
 app.use(cors())
 app.use(express.json())
 app.use(express.static( 'public'));
 
-app.use('/users', authRouter)
+app.use('/auth', authRouter)
+app.use('/users', usersRouter)
 
 app.use('/api/contacts', contactsRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/filters', filtersRouter)
+app.use('/drinks', drinksRouter)
 
 
 app.use((req, res) => {

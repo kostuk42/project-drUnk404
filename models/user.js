@@ -131,11 +131,23 @@ const emailJoiSchema = Joi.object({
     }),
 });
 
+const subscribeJoiSchema = Joi.object({
+    email: Joi.string()
+        .pattern(emailRegexp).messages({
+            'string.pattern.base': 'invalid email format'
+        })
+        .required().messages({
+        'any.required': 'missing required email field'
+    })
+});
+
+
 const schemas = {
-  registerJoiSchema,
-  loginJoiSchema,
-  emailJoiSchema,
-};
+    registerJoiSchema,
+    loginJoiSchema,
+    emailJoiSchema,
+    subscribeJoiSchema
+}
 
 module.exports = {
   User,

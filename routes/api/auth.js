@@ -6,7 +6,6 @@ const router = express.Router();
 const {
   register,
   login,
-  getCurrent,
   logout,
   updateAvatar,
   verifyEmail,
@@ -23,8 +22,6 @@ router.get("/verify/:verificationToken", verifyEmail);
 router.post("/verify", validateBody(schemas.emailJoiSchema), resendVerifyEmail);
 
 router.post("/signin", validateBody(schemas.loginJoiSchema), login);
-
-router.get("/current", authenticate, getCurrent);
 
 router.post("/signout", authenticate, logout);
 
