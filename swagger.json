@@ -1,0 +1,1151 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "version": "1.0.0",
+    "title": "Swagger project drunk404",
+    "description": "Showing off swagger-ui-express",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "consumes": [
+    "application/json",
+    "multipart/form-data"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "servers": [
+    {
+      "url": "https://drunk404.onrender.com"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authorization endpoints"
+    },
+    {
+      "name": "Users",
+      "description": "Users endpoints"
+    },
+    {
+      "name": "Filters",
+      "description": "Filters endpoints"
+    },
+    {
+      "name": "Drinks",
+      "description": "Drinks endpoints"
+    }
+  ],
+  "paths": {
+    "/auth/signup": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "User registration",
+        "parameters": [],
+        "requestBody": {
+          "description": "Registration's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Registration Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "409": {
+            "description": "Provided email already exists",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/auth/signin": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "User login",
+        "parameters": [],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "User login credentials",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid credentials)",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (invalid or missing token)",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/auth/signout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "User Signout",
+        "description": "Endpoint for user logout (signout).",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful signout",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized (missing or invalid token)",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/current": {
+      "get": {
+        "summary": "Get information about the current user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of user information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication error"
+          }
+        }
+      }
+    },
+    "/users/update": {
+      "patch": {
+        "summary": "Update current user's information",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User information updated successfully"
+          },
+          "400": {
+            "description": "Bad request (invalid data in the request)"
+          },
+          "401": {
+            "description": "Authentication error"
+          }
+        }
+      }
+    },
+    "/users/subscribe": {
+      "post": {
+        "summary": "Subscribe to email notifications",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Subscription request successfully processed"
+          },
+          "400": {
+            "description": "Bad request (if any)"
+          },
+          "401": {
+            "description": "Authentication error"
+          }
+        }
+      }
+    },
+    "/filters/categories": {
+      "get": {
+        "summary": "Get list of cocktail categories",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "tags": [
+          "Filters"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": [
+                  "Ordinary Drink",
+                  "Cocktail",
+                  "Shake",
+                  "Other/Unknown",
+                  "Cocoa",
+                  "Shot",
+                  "Coffee/Tea",
+                  "Homemade Liqueur",
+                  "Punch/Party Drink",
+                  "Beer",
+                  "Soft Drink"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/filters/ingredients": {
+      "get": {
+        "summary": "Get the list of ingredients",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "tags": [
+          "Filters"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of ingredients list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ingredient"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/filters/glasses": {
+      "get": {
+        "summary": "Get the list of serving glasses",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "tags": [
+          "Filters"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of serving glasses list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": [
+                    "Highball glass",
+                    "Cocktail glass",
+                    "Old-fashioned glass",
+                    "Whiskey Glass",
+                    "Collins glass",
+                    "Pousse cafe glass",
+                    "Champagne flute",
+                    "Whiskey sour glass",
+                    "Cordial glass",
+                    "Brandy snifter",
+                    "White wine glass",
+                    "Nick and Nora Glass",
+                    "Hurricane glass",
+                    "Coffee mug",
+                    "Shot glass",
+                    "Jar",
+                    "Irish coffee cup",
+                    "Punch bowl",
+                    "Pitcher",
+                    "Pint glass",
+                    "Copper Mug",
+                    "Wine Glass",
+                    "Beer mug",
+                    "Margarita/Coupette glass",
+                    "Beer pilsner",
+                    "Beer Glass",
+                    "Parfait glass",
+                    "Mason jar",
+                    "Margarita glass",
+                    "Martini Glass",
+                    "Balloon Glass",
+                    "Coupe Glass"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/drinks/mainpage": {
+      "get": {
+        "summary": "Get cocktails for the main page",
+        "tags": [
+          "Drinks"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of cocktails for the main page format: {\"category1\": [cocktail1, cocktail2, ...], \"category2\": [cocktail3, cocktail4, ...]}",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Recipe"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/drinks/popular": {
+      "get": {
+        "summary": "Get the most popular drinks according to favourites",
+        "tags": [
+          "Drinks"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of popular cocktails",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Recipe"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/drinks/search": {
+      "get": {
+        "summary": "Get cocktails by category, ingredient, and search query",
+        "tags": [
+          "Drinks"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "description": "Page number for pagination"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "description": "Number of cocktails per page"
+          },
+          {
+            "name": "ingredient",
+            "in": "query",
+            "type": "string",
+            "description": "Ingredient to filter by"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string",
+            "description": "Category to filter by"
+          },
+          {
+            "name": "searchQuery",
+            "in": "query",
+            "type": "string",
+            "description": "Search query to filter by"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of cocktails by category, ingredient, and search query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Recipe"
+                      }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "description": "Total number of matching recipes"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/drinks/{id}": {
+      "get": {
+        "summary": "Get cocktail by ID",
+        "tags": [
+          "Drinks"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Cocktail ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of a cocktail by ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Recipe"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Cocktail not found"
+          }
+        }
+      }
+    },
+    "/drinks/own/add": {
+      "post": {
+        "summary": "Add a custom cocktail",
+        "tags": [
+          "Drinks"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "Custom cocktail to add",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/DrinkRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cocktail added successfully"
+          },
+          "400": {
+            "description": "Bad request (invalid request body)"
+          },
+          "401": {
+            "description": "Unauthorized (user not authenticated)"
+          }
+        }
+      }
+    },
+    "/drinks/own/remove/{id}": {
+      "delete": {
+        "summary": "Remove a custom cocktail",
+        "tags": [
+          "Drinks"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "ID of the cocktail to be removed",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Cocktail removed successfully"
+          },
+          "401": {
+            "description": "Unauthorized (user not authenticated)"
+          },
+          "403": {
+            "description": "Forbidden (cocktail not found or does not belong to the user)"
+          }
+        }
+      }
+    },
+    "/drinks/own": {
+      "get": {
+        "summary": "Get user's custom cocktails",
+        "tags": [
+          "Drinks"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of user's custom cocktails",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Recipe"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (user not authenticated)"
+          }
+        }
+      }
+    },
+    "/drinks/favorite/add": {
+      "post": {
+        "summary": "Add a cocktail to the list of favorite drinks",
+        "tags": ["Drinks"],
+        "security": [
+          {"Bearer": []}
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "required": true,
+                "description": "ID of the cocktail to be added to the list of favorite drinks",
+                "example": "11007"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The cocktail has been added to the list of favorite drinks"
+          },
+          "400": {
+            "description": "Bad request or missing required parameter 'cocktailId'"
+          },
+          "401": {
+            "description": "Authentication error"
+          }
+        }
+      }
+    },
+    "/drinks/favoirite/remove/{id}": {
+      "delete": {
+        "summary": "Remove cocktail from the list of favorite drinks",
+        "tags": [
+          "Drinks"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "ID of the cocktail to be removed",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Cocktail removed successfully"
+          },
+          "401": {
+            "description": "Unauthorized (user not authenticated)"
+          },
+          "403": {
+            "description": "Forbidden (cocktail not found)"
+          }
+        }
+      }
+    },
+    "/drinks/favorite": {
+      "get": {
+        "summary": "Get user's favorite cocktails",
+        "tags": [
+          "Drinks"
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of user's favorite cocktails",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Recipe"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized (user not authenticated)"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DrinkRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "category",
+          "alcoholic",
+          "glass",
+          "instructions",
+          "ingredients"
+        ],
+        "properties": {
+          "drinkThumb": {
+            "type": "string",
+            "format": "binary",
+            "description": "User's avatar image file"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the cocktail",
+            "example": "Margarita"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of the cocktail",
+            "example": "Ordinary Drink"
+          },
+          "alcoholic": {
+            "type": "string",
+            "description": "Alcoholic or non-alcoholic",
+            "example": "Alcoholic"
+          },
+
+          "glass": {
+            "type": "string",
+            "description": "Type of glass",
+            "example": "Cocktail glass"
+          },
+          "instructions": {
+            "type": "string",
+            "description": "Instructions for making the cocktail",
+            "example": "Rub the rim of the glass with the lime slice to make the salt stick to it. Take care to moisten.."
+          },
+          "ingredients": {
+            "type": "array",
+            "description": "Ingredients needed for making the cocktail",
+            "items": {
+              "$ref": "#/components/schemas/IngredientShort"
+            }
+          }
+        }
+      },
+      "RegistrationRequest": {
+        "type": "object",
+        "required": [
+          "email",
+          "password",
+          "username",
+          "birthDate"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "example": "123@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty123"
+          },
+          "username": {
+            "type": "string",
+            "description": "User's name",
+            "example": "John Doe"
+          },
+          "birthDate": {
+            "type": "string",
+            "description": "User's birth date",
+            "example": "1999-12-31"
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "example": "123@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty123"
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "User's ID",
+            "example": 12345
+          },
+          "token": {
+            "type": "string",
+            "description": "Authentication token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.5F5ehDsdYM6K6hsM0FzswOYjDc8U0Aaa_cKGxkeINR0"
+          },
+          "birthDate": {
+            "type": "string",
+            "description": "User's birth date",
+            "example": "1999-12-31"
+          },
+          "username": {
+            "type": "string",
+            "description": "User's name",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "example": "123@gmail.com"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "description": "User's avatar URL",
+            "example": "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50"
+          },
+            "favorite": {
+                "type": "array",
+                "description": "User's favorite cocktails IDs",
+                "items": {
+                  "type": "string"
+                },
+                "example": ["13", "22", "42"]
+            }
+        },
+        "example": {
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.5F5ehDsdYM6K6hsM0FzswOYjDc8U0Aaa_cKGxkeINR0",
+          "id": "1",
+          "birthDate": "1999-12-31",
+          "username": "John Doe",
+          "email": "123@gmail.com",
+          "avatarUrl": "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50",
+          "favorite": ["13", "22", "42"]
+        }
+      },
+      "UserInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "User's ID",
+            "example": "12345"
+          },
+          "birthDate": {
+            "type": "string",
+            "description": "User's birth date",
+            "example": "1999-12-31"
+          },
+          "username": {
+            "type": "string",
+            "description": "User's name",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "example": ""
+          },
+          "avatarUrl": {
+            "type": "string",
+            "description": "User's avatar URL",
+            "example": "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50"
+          },
+          "favorite": {
+            "type": "array",
+            "description": "User's favourite cocktails",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "32",
+              "1254",
+              "867"
+            ]
+          }
+        }
+      },
+      "UserUpdateRequest": {
+        "type": "object",
+        "required": [
+          "username"
+        ],
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "New username for the user",
+            "minLength": 1
+          },
+          "avatar": {
+            "type": "string",
+            "format": "binary",
+            "description": "User's avatar image file"
+          }
+        }
+      },
+      "Recipe": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$oid": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "drink": {
+            "type": "string"
+          },
+          "drinkAlternate": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "string"
+          },
+          "video": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "IBA": {
+            "type": "string"
+          },
+          "alcoholic": {
+            "type": "string"
+          },
+          "glass": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "instructions": {
+            "type": "string"
+          },
+          "instructionsES": {
+            "type": "string"
+          },
+          "instructionsDE": {
+            "type": "string"
+          },
+          "instructionsFR": {
+            "type": "string"
+          },
+          "instructionsIT": {
+            "type": "string"
+          },
+          "instructionsRU": {
+            "type": "string"
+          },
+          "instructionsPL": {
+            "type": "string"
+          },
+          "instructionsUK": {
+            "type": "string"
+          },
+          "drinkThumb": {
+            "type": "string"
+          },
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IngredientShort"
+            }
+          },
+          "shortDescription": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "id": "5f1d5f1b1c9d44000047b8e2",
+          "userId": "5f1d5f1b1c9d44000047b8e2",
+          "drink": "Mojito",
+          "category": "Cocktail",
+          "alcoholic": "Alcoholic",
+          "glass": "Highball glass",
+          "description": "A mojito is a cocktail that consists of five ingredients: white rum, sugar, lime juice, soda water, and mint. Its combination of sweetness, citrus, and herbaceous mint flavours is intended to complement the rum, and has made the mojito a popular summer drink.",
+          "instructions": "Muddle mint leaves with sugar and lime juice. Add a splash of soda water and fill the glass with cracked ice. Pour the rum and top with soda water. Garnish and serve with straw.",
+          "drinkThumb": "https://www.thecocktaildb.com/images/media/drink/metwgh1606770327.jpg",
+          "ingredients": [
+            {
+              "id": "5f1d5f1b1c9d44000047b8e3",
+              "title": "Light rum",
+              "measure": "2-3 oz"
+            },
+            {
+              "id": "5f1d5f1b1c9d44000047b8e4",
+              "title": "Lime",
+              "measure": "Juice of 1"
+            },
+            {
+              "id": "5f1d5f1b1c9d44000047b8e5",
+              "title": "Sugar",
+              "measure": "2 tsp"
+            },
+            {
+              "id": "5f1d5f1b1c9d44000047b8e6",
+              "title": "Mint",
+              "measure": "2-4"
+            },
+            {
+              "id": "5f1d5f1b1c9d44000047b8e7",
+              "title": "Soda water",
+              "measure": "Top up with"
+            }
+          ]
+        }
+      },
+      "Ingredient": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$oid": "string",
+            "description": "Unique ID of the ingredient"
+          },
+          "title": {
+            "type": "string",
+            "description": "Name of the ingredient"
+          },
+          "ingredientThumb": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to the ingredient's thumbnail image"
+          },
+          "thumb-medium": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to a medium-sized thumbnail image"
+          },
+          "thumb-small": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to a small-sized thumbnail image"
+          },
+          "abv": {
+            "type": "string",
+            "description": "Alcohol by volume (ABV) of the ingredient"
+          },
+          "alcohol": {
+            "type": "string",
+            "description": "Indicates whether the ingredient contains alcohol (e.g., 'Yes' or 'No')"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the ingredient"
+          },
+          "type": {
+            "type": "string",
+            "description": "Type or category of the ingredient"
+          },
+          "flavour": {
+            "type": "string",
+            "description": "Flavour profile of the ingredient"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country of origin of the ingredient"
+          }
+        }
+      },
+      "IngredientShort": {
+        "type": "object",
+        "properties": {
+          "ingredientId": {
+            "$oid": "string",
+            "description": "Unique ID of the ingredient"
+          },
+          "title": {
+            "type": "string",
+            "description": "Name of the ingredient"
+          },
+          "measure": {
+            "type": "string",
+            "description": "Number of the ingredients parts"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
