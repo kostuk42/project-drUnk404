@@ -26,27 +26,37 @@ const getAllDrinksMainPage = async (req, res) => {
 }
 
 const getFilteredDrinks = async (req, res) => {
-    const filter = req.query
-    const birthDate = req.user.birthDate
-    const userIsAdult = isUserAdult(birthDate)
-    const isFiltered = Object.keys(filter).length !== 0
-    const filterFields = ["drink", "category"]
+      const { query, user } = req;
+    const birthDate = user.birthDate;
+    const userIsAdult = isUserAdult(birthDate);
 
-    const findOptions = userIsAdult ? {} : { alcoholic: "Non alcoholic"}
-    if (isFiltered) {
-        if (filter.ingredient) {
-            findOptions.ingredients = { $elemMatch: { title: filter.ingredient } }
-        }
-        filterFields.forEach(field => {
-            if (filter[field]) {
-      findOptions[field] = { $regex: filter[field], $options: 'i' };
+    const findOptions = userIsAdult ? {} : { alcoholic: "Non alcoholic" };
+    const orConditions = [];
+
+    if (query.ingredient) {
+        findOptions.ingredients = { $elemMatch: { title: query.ingredient } };
     }
-        });
+
+    if (query.search) {
+        orConditions.push(
+            { drink: { $regex: query.search, $options: 'i' } },
+            { description: { $regex: query.search, $options: 'i' } },
+            { shortDescription: { $regex: query.search, $options: 'i' } },
+        );
     }
+
+    if (query.category) {
+        findOptions.category = { $regex: query.category, $options: 'i' };
+    }
+
+    if (orConditions.length > 0) {
+        findOptions.$or = orConditions;
+    }
+
     const dataQuery = Recipe.find(findOptions);
 
-    const paginationPage = filter.page ? + filter.page : 1;
-    const paginationLimit = filter.limit ? + filter.limit : 10;
+    const paginationPage = query.page ? + query.page : 1;
+    const paginationLimit = query.limit ? + query.limit : 10;
     const cocktailsToSkip = (paginationPage - 1) * paginationLimit;
 
     dataQuery.skip(cocktailsToSkip).limit(paginationLimit);
