@@ -13,8 +13,8 @@ const authRouter = require('./routes/api/auth');
 const filtersRouter = require('./routes/api/filters');
 const usersRouter = require('./routes/api/users');
 const drinksRouter = require('./routes/api/drinks');
-const ownRouter = require('./routes/api/own');
-const favoriteRouter = require('./routes/api/favorite')
+const ownRouter = require('./routes/api/drinks/own');
+const favoriteRouter = require('./routes/api/drinks/favorite')
 
 app.use(logger(formatsLogger))
 app.use(cors())
