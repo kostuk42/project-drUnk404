@@ -13,6 +13,8 @@ const authRouter = require('./routes/api/auth');
 const filtersRouter = require('./routes/api/filters');
 const usersRouter = require('./routes/api/users');
 const drinksRouter = require('./routes/api/drinks');
+const ownRouter = require('./routes/api/own');
+const favoriteRouter = require('./routes/api/favorite')
 
 app.use(logger(formatsLogger))
 app.use(cors())
@@ -26,6 +28,8 @@ app.use('/api/contacts', contactsRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/filters', filtersRouter)
 app.use('/drinks', drinksRouter)
+app.use('/own', ownRouter)
+app.use('/favorite', favoriteRouter)
 
 
 app.use((req, res) => {
