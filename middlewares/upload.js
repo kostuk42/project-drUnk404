@@ -21,7 +21,7 @@ const storage = new CloudinaryStorage({
             // transform image to 100X100 with face detection gravity
             trasformConfig = {width: 100, height: 100, gravity: "face", crop: "thumb"}
         }
-         else if (file.fieldname === "cocktail") {
+         else if (file.fieldname === "drinkThumb") {
             folder = "cocktails";
         } else {
             folder = "others";
