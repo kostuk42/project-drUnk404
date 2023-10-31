@@ -1,12 +1,9 @@
 const {HttpError} = require('../helpers');
 const validateBody = (schema) => {
     const func = async (req, res, next) => {
-        if(!req.body || Object.keys(req.body).length === 0 && !req.url.includes('verify')) {
-            if( req.method === 'PATCH') {
-                next(HttpError(400, 'missing field favorite'));
-            } else {
-                next(HttpError(400, 'missing fields'));
-            }
+        const reqsWithoutBody = ['signout', 'remove', 'verify']
+        if(!req.body || Object.keys(req.body).length === 0 && !reqsWithoutBody.includes(req.url)) {
+            next(HttpError(400, 'missing fields'));
            return
         }
         const { error } = await schema.validate(req.body);
