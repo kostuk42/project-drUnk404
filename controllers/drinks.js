@@ -72,6 +72,24 @@ const getDrinkById = async (req, res) => {
     res.status(200).json({data})
 }
 
+<<<<<<< Updated upstream
+=======
+const addOwnDrink = async (req, res) => {
+    const drinkThumb = req.file?.path;
+    if(drinkThumb){
+        req.body.drinkThumb = drinkThumb
+    }
+    const userId = req.user._id;
+    const drink = await Recipe.findOne({drink: req.body.drink});
+    if (drink) {
+        res.status(409).json({message: 'Drink already exists'})
+        return
+    }
+    const data = await Recipe.create({...req.body, userId})
+    res.status(200).json({data})
+}
+
+>>>>>>> Stashed changes
 module.exports = {
     getAllDrinksMainPage: ctrlWrapper(getAllDrinksMainPage),
     getDrinkById: ctrlWrapper(getDrinkById),

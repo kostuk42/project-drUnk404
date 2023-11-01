@@ -759,11 +759,14 @@
             "format": "binary",
             "description": "User's avatar image file"
           },
+<<<<<<< Updated upstream
           "name": {
             "type": "string",
             "description": "Name of the cocktail",
             "example": "Margarita"
           },
+=======
+>>>>>>> Stashed changes
           "category": {
             "type": "string",
             "description": "Category of the cocktail",
