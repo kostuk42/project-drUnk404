@@ -80,6 +80,10 @@ const recipeSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'user'
+    },
+    favorite: {
+        type: [Schema.Types.ObjectId],
+        ref: 'user'
     }
 }, {
     versionKey: false,

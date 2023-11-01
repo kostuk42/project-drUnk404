@@ -1,7 +1,5 @@
 const { Recipe } = require('../models/recipes');
 const { ctrlWrapper, isUserAdult, HttpError } = require("../helpers")
-const upload = require("../middlewares/upload.js");
-const fs = require("fs/promises");
 
 const getAllDrinksMainPage = async (req, res) => {
     const birthDate = req.user.birthDate
@@ -73,17 +71,19 @@ const getDrinkById = async (req, res) => {
     res.status(200).json({data})
 }
 
-const errStatus = 404;
+
 const addToFavorite = async (req, res) => {
-  const { id: recipeId } = req.params;
+
+  const { id: recipeId } = req.body;
   const { _id: userId } = req.user;
 
   let favoriteRecipe = await Recipe.findById(recipeId);
 
+  
   if (!favoriteRecipe) {
-    throw HttpError(errStatus);
+    throw HttpError(404);
   }
-
+  
   if (favoriteRecipe.favorite) {
     if (!favoriteRecipe.favorite.includes(userId)) {
       favoriteRecipe.favorite.push(userId);
@@ -91,7 +91,8 @@ const addToFavorite = async (req, res) => {
   } else {
     favoriteRecipe = { ...favoriteRecipe, favorite: [userId] };
   }
-
+  
+  console.log(favoriteRecipe);
   await favoriteRecipe.save();
 
   res.json(favoriteRecipe);
@@ -115,14 +116,14 @@ const getFavorite = async (req, res) => {
   res.json({ page: numberPage, limit: numberLimit, totalHits, result });
 };
 
-const removeFromFavorite = async (req, res, next) => {
-  const { id } = req.params;
+const removeFromFavorite = async (req, res) => {
+  const { id } = req.body;
   const { _id } = req.user;
+  console.log(id);
 
   const result = await Recipe.findById(id);
-
   if (!result) {
-    throw HttpError(errStatus);
+    throw HttpError(404);
   }
 
   if (result.favorite) {
@@ -138,62 +139,30 @@ const removeFromFavorite = async (req, res, next) => {
 };
 
 const getOwnRecipes = async (req, res) => {
-  const { _id: owner } = req.user;
-  const result = await Recipe.find({ owner });
+  console.log("here");
+  const { _id: userId } = req.user;
+  const result = await Recipe.find({ userId });
   res.json(result);
 };
 
 const removeOwnRecipe = async (req, res) => {
   const { _id } = req.user;
-  const { id } = req.params;
+  const { id } = req.body;
 
   const deletedRecipe = await Recipe.findById(id);
   if (!deletedRecipe) {
     throw HttpError(404);
   }
 
-  if (JSON.stringify(deletedRecipe.owner) === JSON.stringify(_id)) {
+  if (JSON.stringify(deletedRecipe.userId) === JSON.stringify(_id)) {
     await deletedRecipe.deleteOne();
   } else {
-    throw HttpError(403);
+    throw HttpError(400);
   }
 
-  res.json({ deletedRecipe });
+  res.json({ message: "Successfully deleted!" });
 };
 
-const addOwnRecipe = async (req, res) => {
-  const { _id: owner } = req.user;
-  if (!req.file) {
-    const newRecipe = await Recipe.create({ ...req.body, drinkThumb: null, owner });
-    return req.json(newRecipe);
-  }
-
-  const { path: tempUpload, originalname } = req.file;
-
-  try {
-    const fileName = `${owner}_${originalname}`;
-
-    const { url: drinkThumb } = await upload.uploader.upload(tempUpload, {
-      folder: "recipes",
-      public_id: fileName,
-      quality: 60,
-      crop: "fill",
-    });
-
-    const newRecipe = await Recipe.create({
-      ...req.body,
-      drinkThumb,
-      owner,
-    });
-
-    await fs.unlink(tempUpload);
-
-    res.status(201).json(newRecipe);
-  } catch (error) {
-    await fs.unlink(tempUpload);
-    throw error;
-  }
-};
 const addOwnDrink = async (req, res) => {
     const drinkThumb = req.file?.path;
     if(drinkThumb){
@@ -217,7 +186,6 @@ module.exports = {
     getFavorite: ctrlWrapper(getFavorite),
     removeFromFavorite: ctrlWrapper(removeFromFavorite),
     getOwnRecipes: ctrlWrapper(getOwnRecipes),
-    addOwnRecipe: ctrlWrapper(addOwnRecipe),
     removeOwnRecipe: ctrlWrapper(removeOwnRecipe),
     addOwnDrink: ctrlWrapper(addOwnDrink)
 }

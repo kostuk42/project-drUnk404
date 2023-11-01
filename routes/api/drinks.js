@@ -1,24 +1,24 @@
 const express = require('express');
-const { getAllDrinksMainPage, getDrinkById, getFilteredDrinks, getOwnRecipes, addOwnRecipe, removeOwnRecipe,addToFavorite, getFavorite, removeFromFavorite, addOwnDrink  } = require('../../controllers/drinks')
-const { validateBody,authenticate, isValidId,  upload } = require('../../middlewares');
-const { schemas } = require('../../models/contact');
+const { getAllDrinksMainPage, getDrinkById, getFilteredDrinks, getOwnRecipes, removeOwnRecipe,addToFavorite, getFavorite, removeFromFavorite, addOwnDrink  } = require('../../controllers/drinks')
+const { validateBody,authenticate, upload } = require('../../middlewares');
 const {addOwnDrinkJoiSchema} = require("../../models/recipes");
 
 const router = express.Router();
 
 router.use(authenticate);
 
-router.get('/mainpage', getAllDrinksMainPage);
-router.get('/search', getFilteredDrinks);
-router.get('/:id', getDrinkById);
-router.post('/own/add', upload.single('drinkThumb'), validateBody(addOwnDrinkJoiSchema), addOwnDrink)
+router.get('/mainpage', getAllDrinksMainPage); 
+router.get('/search', getFilteredDrinks); 
 
-router.post("/add/:id", validateBody(schemas.addSchema), addToFavorite);
-router.get("/", getFavorite);
-router.delete("/remove/:id", isValidId, removeFromFavorite);
+router.get('/own', getOwnRecipes); 
 
-router.get("/", getOwnRecipes);
-router.post("/", validateBody(schemas.addSchema), addOwnRecipe);
-router.delete("/:id", authenticate, isValidId, removeOwnRecipe);
+router.post('/own/add', upload.single('drinkThumb'), validateBody(addOwnDrinkJoiSchema), addOwnDrink)  
+
+router.post("/favorite/add", addToFavorite); 
+router.get("/favorite", getFavorite); 
+router.delete("/remove", removeFromFavorite); 
+router.delete("/own/remove", authenticate, removeOwnRecipe);
+
+router.get('/:id', getDrinkById); 
 
 module.exports = router;
