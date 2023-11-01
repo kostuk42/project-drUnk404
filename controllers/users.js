@@ -15,7 +15,7 @@ const sendSubscriptionEmail = async (req, res) => {
     if (!user) {
         throw HttpError(404, 'User not found')
     }
-    if(user.subscription) {
+    if(user.subscribe) {
         throw HttpError(400, 'User is already subscribed.')
     }
 
@@ -26,7 +26,7 @@ const sendSubscriptionEmail = async (req, res) => {
     }
 
     await sendEmail(subscriptionEmail);
-    user.subscription = true
+    user.subscribe = true
     await user.save()
 
     res.status(200).json({

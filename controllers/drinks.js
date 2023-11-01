@@ -1,5 +1,6 @@
 const { Recipe } = require('../models/recipes');
 const { ctrlWrapper, isUserAdult } = require("../helpers")
+const {Contact} = require("../models/contact");
 
 const getAllDrinksMainPage = async (req, res) => {
     const birthDate = req.user.birthDate
@@ -41,7 +42,6 @@ const getFilteredDrinks = async (req, res) => {
         orConditions.push(
             { drink: { $regex: query.search, $options: 'i' } },
             { description: { $regex: query.search, $options: 'i' } },
-            { shortDescription: { $regex: query.search, $options: 'i' } },
         );
     }
 
@@ -72,8 +72,6 @@ const getDrinkById = async (req, res) => {
     res.status(200).json({data})
 }
 
-<<<<<<< Updated upstream
-=======
 const addOwnDrink = async (req, res) => {
     const drinkThumb = req.file?.path;
     if(drinkThumb){
@@ -89,9 +87,9 @@ const addOwnDrink = async (req, res) => {
     res.status(200).json({data})
 }
 
->>>>>>> Stashed changes
 module.exports = {
     getAllDrinksMainPage: ctrlWrapper(getAllDrinksMainPage),
     getDrinkById: ctrlWrapper(getDrinkById),
     getFilteredDrinks: ctrlWrapper(getFilteredDrinks),
+    addOwnDrink: ctrlWrapper(addOwnDrink)
 }
