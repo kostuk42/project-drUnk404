@@ -1,6 +1,5 @@
 const { Recipe } = require('../models/recipes');
-const { ctrlWrapper, isUserAdult } = require("../helpers")
-const {Contact} = require("../models/contact");
+const { ctrlWrapper, isUserAdult, HttpError } = require("../helpers")
 
 const getAllDrinksMainPage = async (req, res) => {
     const birthDate = req.user.birthDate
@@ -72,6 +71,98 @@ const getDrinkById = async (req, res) => {
     res.status(200).json({data})
 }
 
+
+const addToFavorite = async (req, res) => {
+
+  const { id: recipeId } = req.body;
+  const { _id: userId } = req.user;
+
+  let favoriteRecipe = await Recipe.findById(recipeId);
+
+  
+  if (!favoriteRecipe) {
+    throw HttpError(404);
+  }
+  
+  if (favoriteRecipe.favorite) {
+    if (!favoriteRecipe.favorite.includes(userId)) {
+      favoriteRecipe.favorite.push(userId);
+    }
+  } else {
+    favoriteRecipe = { ...favoriteRecipe, favorite: [userId] };
+  }
+  
+  console.log(favoriteRecipe);
+  await favoriteRecipe.save();
+
+  res.json(favoriteRecipe);
+};
+
+const getFavorite = async (req, res) => {
+  const { page = 1, limit = 9 } = req.query;
+  const { _id } = req.user;
+
+  const skip = (page - 1) * limit;
+  const numberPage = Number(page);
+  const numberLimit = Number(limit);
+
+  const result = await Recipe.find({ favorite: _id }, "", {
+    skip,
+    limit,
+  }).lean();
+
+  const totalHits = await Recipe.countDocuments({ favorite: _id });
+
+  res.json({ page: numberPage, limit: numberLimit, totalHits, result });
+};
+
+const removeFromFavorite = async (req, res) => {
+  const { id } = req.body;
+  const { _id } = req.user;
+  console.log(id);
+
+  const result = await Recipe.findById(id);
+  if (!result) {
+    throw HttpError(404);
+  }
+
+  if (result.favorite) {
+    if (result.favorite.includes(_id)) {
+      const index = result.favorite.indexOf(_id);
+      result.favorite.splice(index, 1);
+    }
+  }
+
+  await result.save();
+
+  res.json({ result });
+};
+
+const getOwnRecipes = async (req, res) => {
+  console.log("here");
+  const { _id: userId } = req.user;
+  const result = await Recipe.find({ userId });
+  res.json(result);
+};
+
+const removeOwnRecipe = async (req, res) => {
+  const { _id } = req.user;
+  const { id } = req.body;
+
+  const deletedRecipe = await Recipe.findById(id);
+  if (!deletedRecipe) {
+    throw HttpError(404);
+  }
+
+  if (JSON.stringify(deletedRecipe.userId) === JSON.stringify(_id)) {
+    await deletedRecipe.deleteOne();
+  } else {
+    throw HttpError(400);
+  }
+
+  res.json({ message: "Successfully deleted!" });
+};
+
 const addOwnDrink = async (req, res) => {
     const drinkThumb = req.file?.path;
     if(drinkThumb){
@@ -91,5 +182,10 @@ module.exports = {
     getAllDrinksMainPage: ctrlWrapper(getAllDrinksMainPage),
     getDrinkById: ctrlWrapper(getDrinkById),
     getFilteredDrinks: ctrlWrapper(getFilteredDrinks),
+    addToFavorite: ctrlWrapper(addToFavorite),
+    getFavorite: ctrlWrapper(getFavorite),
+    removeFromFavorite: ctrlWrapper(removeFromFavorite),
+    getOwnRecipes: ctrlWrapper(getOwnRecipes),
+    removeOwnRecipe: ctrlWrapper(removeOwnRecipe),
     addOwnDrink: ctrlWrapper(addOwnDrink)
 }
