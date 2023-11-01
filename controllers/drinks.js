@@ -178,6 +178,12 @@ const addOwnDrink = async (req, res) => {
     res.status(200).json({data})
 }
 
+const getPopularDrinks = async (req, res) =>{
+  const cocktails = await Recipe.find()
+  const sortedCocktails = cocktails.sort((a, b) => b.favorite.length - a.favorite.length);
+  res.status(200).json({sortedCocktails})
+}
+
 module.exports = {
     getAllDrinksMainPage: ctrlWrapper(getAllDrinksMainPage),
     getDrinkById: ctrlWrapper(getDrinkById),
@@ -187,5 +193,6 @@ module.exports = {
     removeFromFavorite: ctrlWrapper(removeFromFavorite),
     getOwnRecipes: ctrlWrapper(getOwnRecipes),
     removeOwnRecipe: ctrlWrapper(removeOwnRecipe),
-    addOwnDrink: ctrlWrapper(addOwnDrink)
+    addOwnDrink: ctrlWrapper(addOwnDrink),
+    getPopularDrinks: ctrlWrapper(getPopularDrinks),
 }
