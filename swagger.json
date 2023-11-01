@@ -674,7 +674,7 @@
         }
       }
     },
-    "/drinks/favoirite/remove/{id}": {
+    "/drinks/favorite/remove/{id}": {
       "delete": {
         "summary": "Remove cocktail from the list of favorite drinks",
         "tags": [
@@ -746,23 +746,24 @@
       "DrinkRequest": {
         "type": "object",
         "required": [
-          "name",
+          "drink",
           "category",
           "alcoholic",
           "glass",
           "instructions",
-          "ingredients"
+          "ingredients",
+          "description"
         ],
         "properties": {
+          "drink": {
+            "type": "string",
+            "description": "Name of the cocktail",
+            "example": "Margarita"
+          },
           "drinkThumb": {
             "type": "string",
             "format": "binary",
             "description": "User's avatar image file"
-          },
-          "name": {
-            "type": "string",
-            "description": "Name of the cocktail",
-            "example": "Margarita"
           },
           "category": {
             "type": "string",
@@ -774,7 +775,11 @@
             "description": "Alcoholic or non-alcoholic",
             "example": "Alcoholic"
           },
-
+          "description": {
+            "type": "string",
+            "description": "Short description of the cocktail",
+            "example": "A margarita is a cocktail consisting of tequila, orange liqueur, and lime juice often served with salt on the rim of the glass."
+          },
           "glass": {
             "type": "string",
             "description": "Type of glass",
@@ -970,19 +975,7 @@
           "drink": {
             "type": "string"
           },
-          "drinkAlternate": {
-            "type": "string"
-          },
-          "tags": {
-            "type": "string"
-          },
-          "video": {
-            "type": "string"
-          },
           "category": {
-            "type": "string"
-          },
-          "IBA": {
             "type": "string"
           },
           "alcoholic": {
@@ -995,27 +988,6 @@
             "type": "string"
           },
           "instructions": {
-            "type": "string"
-          },
-          "instructionsES": {
-            "type": "string"
-          },
-          "instructionsDE": {
-            "type": "string"
-          },
-          "instructionsFR": {
-            "type": "string"
-          },
-          "instructionsIT": {
-            "type": "string"
-          },
-          "instructionsRU": {
-            "type": "string"
-          },
-          "instructionsPL": {
-            "type": "string"
-          },
-          "instructionsUK": {
             "type": "string"
           },
           "drinkThumb": {

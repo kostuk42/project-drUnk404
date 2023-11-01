@@ -1,6 +1,5 @@
 const { Recipe } = require('../models/recipes');
-const { ctrlWrapper, isUserAdult } = require("../helpers")
-const HttpError = require("../helpers/index.js");
+const { ctrlWrapper, isUserAdult, HttpError } = require("../helpers")
 const upload = require("../middlewares/upload.js");
 const fs = require("fs/promises");
 
@@ -44,7 +43,6 @@ const getFilteredDrinks = async (req, res) => {
         orConditions.push(
             { drink: { $regex: query.search, $options: 'i' } },
             { description: { $regex: query.search, $options: 'i' } },
-            { shortDescription: { $regex: query.search, $options: 'i' } },
         );
     }
 
@@ -196,6 +194,20 @@ const addOwnRecipe = async (req, res) => {
     throw error;
   }
 };
+const addOwnDrink = async (req, res) => {
+    const drinkThumb = req.file?.path;
+    if(drinkThumb){
+        req.body.drinkThumb = drinkThumb
+    }
+    const userId = req.user._id;
+    const drink = await Recipe.findOne({drink: req.body.drink});
+    if (drink) {
+        res.status(409).json({message: 'Drink already exists'})
+        return
+    }
+    const data = await Recipe.create({...req.body, userId})
+    res.status(200).json({data})
+}
 
 module.exports = {
     getAllDrinksMainPage: ctrlWrapper(getAllDrinksMainPage),
@@ -207,4 +219,5 @@ module.exports = {
     getOwnRecipes: ctrlWrapper(getOwnRecipes),
     addOwnRecipe: ctrlWrapper(addOwnRecipe),
     removeOwnRecipe: ctrlWrapper(removeOwnRecipe),
+    addOwnDrink: ctrlWrapper(addOwnDrink)
 }
