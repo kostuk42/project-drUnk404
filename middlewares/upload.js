@@ -23,6 +23,11 @@ const storage = new CloudinaryStorage({
         }
          else if (file.fieldname === "drinkThumb") {
             folder = "cocktails";
+            trasformConfig = {
+                width: 400,
+                height: 400,
+                crop: 'fill'
+            };
         } else {
             folder = "others";
         }

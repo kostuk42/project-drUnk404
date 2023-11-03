@@ -84,6 +84,10 @@ const recipeSchema = new Schema({
     favorite: {
         type: [Schema.Types.ObjectId],
         ref: 'user'
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
 }, {
     versionKey: false,
