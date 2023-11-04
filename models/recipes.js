@@ -87,7 +87,7 @@ const recipeSchema = new Schema({
     },
     createdAt: {
         type: Date,
-        default: Date.now
+        default: null
     }
 }, {
     versionKey: false,

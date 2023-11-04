@@ -18,11 +18,20 @@ const getAllDrinksMainPage = async (req, res) => {
     randomCocktails.push(...cocktails);
 }
 
-    const categorizedCocktails = categories.map(category => {
-    const categoryCocktails = randomCocktails.filter(cocktail => cocktail.category === category);
-    return {[category]: categoryCocktails}; });
+    const categorizedCocktails = randomCocktails.reduce((acc, cocktail) => {
+        const { category } = cocktail;
+        if (!acc[category]) {
+            acc[category] = [];
+        }
+        acc[category].push(cocktail);
+        return acc;
+    }, {})
 
-    res.status(200).json({data:categorizedCocktails})
+    // const categorizedCocktails = categories.map(category => {
+    // const categoryCocktails = randomCocktails.filter(cocktail => cocktail.category === category);
+    // return {[category]: categoryCocktails}; });
+
+    res.status(200).json(categorizedCocktails);
 }
 
 const getFilteredDrinks = async (req, res) => {
@@ -169,12 +178,13 @@ const addOwnDrink = async (req, res) => {
         req.body.drinkThumb = drinkThumb
     }
     const userId = req.user._id;
+    const createdAt = Date.now()
     const drink = await Recipe.findOne({drink: req.body.drink});
     if (drink) {
         res.status(409).json({message: 'Drink already exists'})
         return
     }
-    const data = await Recipe.create({...req.body, userId})
+    const data = await Recipe.create({...req.body, userId, createdAt})
     res.status(200).json({data})
 }
 
