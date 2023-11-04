@@ -38,6 +38,7 @@ const register = async (req, res) => {
       email,
       birthDate,
       avatarURL: newUser.avatarURL,
+      favorites: newUser.favorites,
     },
   });
 };
@@ -102,6 +103,7 @@ const login = async (req, res) => {
       email,
       birthDate,
       avatarURL: user.avatarURL,
+      favorites: user.favorites,
     },
   });
 };
