@@ -17,9 +17,10 @@ const getAllDrinksMainPage = async (req, res) => {
         
     randomCocktails.push(...cocktails);
 }
-
+    const selectedCategories = ['Ordinary Drink', 'Cocktail', 'Shake', 'Other/Unknown'];
     const categorizedCocktails = randomCocktails.reduce((acc, cocktail) => {
         const { category } = cocktail;
+        if (!selectedCategories.includes(category)) {return acc}
         if (!acc[category]) {
             acc[category] = [];
         }
