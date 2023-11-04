@@ -576,9 +576,9 @@
         }
       }
     },
-    "/drinks/own/remove/{id}": {
+    "/drinks/own/remove": {
       "delete": {
-        "summary": "Remove a custom cocktail",
+        "summary": "Remove cocktail from the list of drinks",
         "tags": [
           "Drinks"
         ],
@@ -587,26 +587,36 @@
             "Bearer": []
           }
         ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "description": "ID of the cocktail to be removed",
-            "required": true,
-            "schema": {
-              "type": "string"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "id": "5f1d5f1b1c9d44000047b8e3"
+              }
             }
-          }
-        ],
+          },
+          "required": true
+        },
         "responses": {
           "204": {
             "description": "Cocktail removed successfully"
+          },
+          "400": {
+            "description": "Bad Request (invalid request body)"
           },
           "401": {
             "description": "Unauthorized (user not authenticated)"
           },
           "403": {
-            "description": "Forbidden (cocktail not found or does not belong to the user)"
+            "description": "Forbidden (cocktail not found)"
           }
         }
       }
@@ -674,7 +684,7 @@
         }
       }
     },
-    "/drinks/favorite/remove/{id}": {
+    "/drinks/favorite/remove": {
       "delete": {
         "summary": "Remove cocktail from the list of favorite drinks",
         "tags": [
@@ -685,20 +695,30 @@
             "Bearer": []
           }
         ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "description": "ID of the cocktail to be removed",
-            "required": true,
-            "schema": {
-              "type": "string"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "id": "5f1d5f1b1c9d44000047b8e3"
+              }
             }
-          }
-        ],
+          },
+          "required": true
+        },
         "responses": {
           "204": {
             "description": "Cocktail removed successfully"
+          },
+          "400": {
+            "description": "Bad Request (invalid request body)"
           },
           "401": {
             "description": "Unauthorized (user not authenticated)"
@@ -709,6 +729,7 @@
         }
       }
     },
+
     "/drinks/favorite": {
       "get": {
         "summary": "Get user's favorite cocktails",
