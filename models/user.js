@@ -47,10 +47,6 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    favorites: {
-      type: Array,
-      default: [],
-    },
   },
   {
     versionKey: false,

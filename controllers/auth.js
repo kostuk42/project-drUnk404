@@ -38,7 +38,6 @@ const register = async (req, res) => {
       email,
       birthDate,
       avatarURL: newUser.avatarURL,
-      favorites: newUser.favorites,
     },
   });
 };
@@ -103,7 +102,6 @@ const login = async (req, res) => {
       email,
       birthDate,
       avatarURL: user.avatarURL,
-      favorites: user.favorites,
     },
   });
 };
@@ -125,7 +123,7 @@ const updateAvatar = async (req, res) => {
     .autocrop()
     .cover(250, 250, Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE)
     .writeAsync(resultPath);
-  // await img.resize(250, 250).write(resultPath);
+
   const avatarURL = path.join("avatars", fileName);
   await User.findByIdAndUpdate(_id, { avatarURL });
   res.json({ avatarURL });
