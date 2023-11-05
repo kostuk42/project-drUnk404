@@ -6,6 +6,11 @@ const validateBody = (schema) => {
             next(HttpError(400, 'missing fields'));
            return
         }
+
+        if(req.body.ingredients){
+            req.body.ingredients = JSON.parse(req.body.ingredients);
+        }
+
         const { error } = await schema.validate(req.body);
         if (error) {
             next(HttpError(400, error.details.map(el => el.message).join(', ')));

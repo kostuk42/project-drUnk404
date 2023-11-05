@@ -18,7 +18,7 @@
   ],
   "servers": [
     {
-      "url": "https://drunk404.onrender.com"
+      "url": "http://localhost:3000"
     }
   ],
   "tags": [
@@ -221,6 +221,15 @@
             "Bearer": []
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubscriptionRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "204": {
             "description": "Subscription request successfully processed"
@@ -286,9 +295,14 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Ingredient"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Ingredient"
+                      }
+                    }
                   }
                 }
               }
@@ -572,6 +586,9 @@
           },
           "401": {
             "description": "Unauthorized (user not authenticated)"
+          },
+          "409": {
+            "description": "Drink already exists"
           }
         }
       }
@@ -764,6 +781,19 @@
   },
   "components": {
     "schemas": {
+      "SubscriptionRequest": {
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email address",
+            "example": "asdf@zxc.com"
+          }
+        }
+      },
       "DrinkRequest": {
         "type": "object",
         "required": [
@@ -789,6 +819,19 @@
           "category": {
             "type": "string",
             "description": "Category of the cocktail",
+            "enum": [
+              "Ordinary Drink",
+              "Cocktail",
+              "Shake",
+              "Other/Unknown",
+              "Cocoa",
+              "Shot",
+              "Coffee/Tea",
+              "Homemade Liqueur",
+              "Punch/Party Drink",
+              "Beer",
+              "Soft Drink"
+            ],
             "example": "Ordinary Drink"
           },
           "alcoholic": {
@@ -804,6 +847,40 @@
           "glass": {
             "type": "string",
             "description": "Type of glass",
+            "enum": [
+              "Highball glass",
+              "Cocktail glass",
+              "Old-fashioned glass",
+              "Whiskey Glass",
+              "Collins glass",
+              "Pousse cafe glass",
+              "Champagne flute",
+              "Whiskey sour glass",
+              "Cordial glass",
+              "Brandy snifter",
+              "White wine glass",
+              "Nick and Nora Glass",
+              "Hurricane glass",
+              "Coffee mug",
+              "Shot glass",
+              "Jar",
+              "Irish coffee cup",
+              "Punch bowl",
+              "Pitcher",
+              "Pint glass",
+              "Copper Mug",
+              "Wine Glass",
+              "Beer mug",
+              "Margarita/Coupette glass",
+              "Beer pilsner",
+              "Beer Glass",
+              "Parfait glass",
+              "Mason jar",
+              "Margarita glass",
+              "Martini Glass",
+              "Balloon Glass",
+              "Coupe Glass"
+            ],
             "example": "Cocktail glass"
           },
           "instructions": {
@@ -875,53 +952,46 @@
       "LoginResponse": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "number",
-            "description": "User's ID",
-            "example": 12345
-          },
           "token": {
             "type": "string",
             "description": "Authentication token",
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.5F5ehDsdYM6K6hsM0FzswOYjDc8U0Aaa_cKGxkeINR0"
           },
-          "birthDate": {
-            "type": "string",
-            "description": "User's birth date",
-            "example": "1999-12-31"
-          },
-          "username": {
-            "type": "string",
-            "description": "User's name",
-            "example": "John Doe"
-          },
-          "email": {
-            "type": "string",
-            "description": "User's email",
-            "example": "123@gmail.com"
-          },
-          "avatarUrl": {
-            "type": "string",
-            "description": "User's avatar URL",
-            "example": "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50"
-          },
-            "favorite": {
-                "type": "array",
-                "description": "User's favorite cocktails IDs",
-                "items": {
-                  "type": "string"
+            "user": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "description": "User's name",
+                  "example": "John Doe"
                 },
-                "example": ["13", "22", "42"]
+                "email": {
+                  "type": "string",
+                  "description": "User's email",
+                  "format": "email",
+                  "example": ""
+                },
+                "birthDate": {
+                  "type": "string",
+                  "description": "User's birth date",
+                  "example": "1999-12-31"
+                },
+                "avatarURL": {
+                  "type": "string",
+                  "description": "User's avatar URL",
+                  "example": "https://www.gravatar.com/avatar/7bcf9299a57679b2e758cce362efa064?d=identicon"
+                }
+              }
             }
         },
         "example": {
-          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.5F5ehDsdYM6K6hsM0FzswOYjDc8U0Aaa_cKGxkeINR0",
-          "id": "1",
-          "birthDate": "1999-12-31",
-          "username": "John Doe",
-          "email": "123@gmail.com",
-          "avatarUrl": "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50",
-          "favorite": ["13", "22", "42"]
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTQxZjZiZjNiNmZmNzM4NzFhM2YyOTAiLCJpYXQiOjE2OTkxNzcwNjYsImV4cCI6MTY5OTE4MDY2Nn0.FDteSspK4j3ZHv8c9xCHN6P-3YOEZR4x8QMKGrGB9Uo",
+          "user": {
+            "username": "alex",
+            "email": "alex@test.com",
+            "birthDate": "1996-12-01T00:00:00.000Z",
+            "avatarURL": "https://www.gravatar.com/avatar/7bcf9299a57679b2e758cce362efa064?d=identicon"
+          }
         }
       },
       "UserInfo": {
@@ -994,7 +1064,8 @@
             "type": "string"
           },
           "drink": {
-            "type": "string"
+            "type": "string",
+            "uniqueItems": true
           },
           "category": {
             "type": "string"
@@ -1020,8 +1091,11 @@
               "$ref": "#/components/schemas/IngredientShort"
             }
           },
-          "shortDescription": {
-            "type": "string"
+          "favorite": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "example": {
@@ -1034,31 +1108,12 @@
           "description": "A mojito is a cocktail that consists of five ingredients: white rum, sugar, lime juice, soda water, and mint. Its combination of sweetness, citrus, and herbaceous mint flavours is intended to complement the rum, and has made the mojito a popular summer drink.",
           "instructions": "Muddle mint leaves with sugar and lime juice. Add a splash of soda water and fill the glass with cracked ice. Pour the rum and top with soda water. Garnish and serve with straw.",
           "drinkThumb": "https://www.thecocktaildb.com/images/media/drink/metwgh1606770327.jpg",
+          "favorite": ["5f1d5f1b1c9d44000047b8e3", "5f1d5f1b1c9d44000047b8e6"],
           "ingredients": [
             {
               "id": "5f1d5f1b1c9d44000047b8e3",
               "title": "Light rum",
               "measure": "2-3 oz"
-            },
-            {
-              "id": "5f1d5f1b1c9d44000047b8e4",
-              "title": "Lime",
-              "measure": "Juice of 1"
-            },
-            {
-              "id": "5f1d5f1b1c9d44000047b8e5",
-              "title": "Sugar",
-              "measure": "2 tsp"
-            },
-            {
-              "id": "5f1d5f1b1c9d44000047b8e6",
-              "title": "Mint",
-              "measure": "2-4"
-            },
-            {
-              "id": "5f1d5f1b1c9d44000047b8e7",
-              "title": "Soda water",
-              "measure": "Top up with"
             }
           ]
         }

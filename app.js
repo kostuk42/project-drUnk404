@@ -4,7 +4,6 @@ const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 
-const contactsRouter = require('./routes/api/contacts');
 const app = express();
 
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short'
@@ -22,7 +21,6 @@ app.use(express.static( 'public'));
 app.use('/auth', authRouter)
 app.use('/users', usersRouter)
 
-app.use('/api/contacts', contactsRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/filters', filtersRouter)
 app.use('/drinks', drinksRouter)

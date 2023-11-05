@@ -74,7 +74,13 @@ const recipeSchema = new Schema({
         default: "https://m.media-amazon.com/images/I/519EfrzZi9L._AC_UF894,1000_QL80_.jpg"
     },
     ingredients: {
-        type: [ingredientSchema],
+        type: Array,
+        item: ingredientSchema,
+        example: {
+            title: "Vodka",
+            measure: "1 oz",
+            ingredientId: "5f9f6b9b1c9d440000d1b0a0"
+        },
         required: [true, 'Recipe must have ingredients'],
     },
     userId: {
@@ -83,7 +89,8 @@ const recipeSchema = new Schema({
     },
     favorite: {
         type: [Schema.Types.ObjectId],
-        ref: 'user'
+        ref: 'user',
+        default: []
     },
     createdAt: {
         type: Date,

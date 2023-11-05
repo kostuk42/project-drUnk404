@@ -10,7 +10,6 @@ const {
   updateAvatar,
   verifyEmail,
   resendVerifyEmail,
-  saveAvatar,
 } = require("../../controllers/auth");
 const { validateBody } = require("../../middlewares");
 const { schemas } = require("../../models/user");
@@ -26,7 +25,5 @@ router.post("/signin", validateBody(schemas.loginJoiSchema), login);
 router.post("/signout", authenticate, logout);
 
 router.patch("/avatars", authenticate, upload.single("avatar"), updateAvatar);
-// the route example to demonstrate how to use cloudinary. You should remove it or change as necessary.
-router.post("/avatars", upload.single("avatar"), saveAvatar);
 
 module.exports = router;

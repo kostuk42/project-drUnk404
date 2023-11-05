@@ -28,10 +28,6 @@ const getAllDrinksMainPage = async (req, res) => {
         return acc;
     }, {})
 
-    // const categorizedCocktails = categories.map(category => {
-    // const categoryCocktails = randomCocktails.filter(cocktail => cocktail.category === category);
-    // return {[category]: categoryCocktails}; });
-
     res.status(200).json(categorizedCocktails);
 }
 
@@ -174,6 +170,8 @@ const removeOwnRecipe = async (req, res) => {
 };
 
 const addOwnDrink = async (req, res) => {
+    console.log("req.body");
+    console.log(req.body);
     const drinkThumb = req.file?.path;
     if(drinkThumb){
         req.body.drinkThumb = drinkThumb
