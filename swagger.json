@@ -707,10 +707,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "string",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  }
+                },
                 "required": true,
                 "description": "ID of the cocktail to be added to the list of favorite drinks",
-                "example": "11007"
+                "example": {
+                  "id": "5f1d5f1b1c9d44000047b8e3"
+                }
               }
             }
           }
@@ -791,9 +798,26 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Recipe"
+                  "type": "object",
+                  "properties": {
+                    "page": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "limit": {
+                      "type": "integer",
+                      "example": 10
+                    },
+                    "totalHits": {
+                      "type": "integer",
+                      "example": 4
+                    },
+                    "result": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Recipe"
+                      }
+                    }
                   }
                 }
               }
