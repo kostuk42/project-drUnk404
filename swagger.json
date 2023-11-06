@@ -259,19 +259,46 @@
             "description": "Successful response",
             "content": {
               "application/json": {
-                "example": [
-                  "Ordinary Drink",
-                  "Cocktail",
-                  "Shake",
-                  "Other/Unknown",
-                  "Cocoa",
-                  "Shot",
-                  "Coffee/Tea",
-                  "Homemade Liqueur",
-                  "Punch/Party Drink",
-                  "Beer",
-                  "Soft Drink"
-                ]
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "Ordinary Drink",
+                          "Cocktail",
+                          "Shake",
+                          "Other/Unknown",
+                          "Cocoa",
+                          "Shot",
+                          "Coffee/Tea",
+                          "Homemade Liqueur",
+                          "Punch/Party Drink",
+                          "Beer",
+                          "Soft Drink"
+                        ]
+                      }
+                    }
+                  }
+                },
+
+                "example": {
+                  "data": [
+                    "Ordinary Drink",
+                    "Cocktail",
+                    "Shake",
+                    "Other/Unknown",
+                    "Cocoa",
+                    "Shot",
+                    "Coffee/Tea",
+                    "Homemade Liqueur",
+                    "Punch/Party Drink",
+                    "Beer",
+                    "Soft Drink"
+                  ]
+                }
               }
             }
           }
