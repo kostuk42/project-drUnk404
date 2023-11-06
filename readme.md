@@ -51,7 +51,7 @@ Alternatively, instead of using the hosted version of the product, the API can b
 ### `/drinks`
 
 - `GET /mainpage`: Returns an object with keys - `categories` and values - an array of 3 cocktails from the category.
-- `GET /popular`: Returns cocktails sorted by the field ‘favourite’ from the most popular to the least.
+- `GET /popular`: Returns cocktails sorted by the field ‘favorite’ from the most popular to the least.
 - `GET /search`: Returns cocktails that might be filtered by category, ingredient, search query, and pagination, and cocktails limit per page.
 - `GET /:id`: Receives the body with the required field `id`. Returns the cocktail by id.
 
@@ -61,9 +61,9 @@ Alternatively, instead of using the hosted version of the product, the API can b
 
 - `GET /own`: Returns all cocktails created by the user.
 
-- `POST /favorite/add`: Receives the body with the required field id and adds to ‘favourite’ user id. Returns the favorite cocktail.
+- `POST /favorite/add`: Receives the body with the required field id and adds to ‘favorite’ user id. Returns the favorite cocktail.
 
-- `DELETE /favorite/remove`: Receives the body with the required field id and deletes the user id from the ‘favourite’ field. Returns the deleted cocktail.
+- `DELETE /favorite/remove`: Receives the body with the required field id and deletes the user id from the ‘favorite’ field. Returns the deleted cocktail.
 
 - `GET /favorite`: Returns all user favorite cocktails.
 
