@@ -85,7 +85,7 @@ const addToFavorite = async (req, res) => {
 
   let favoriteRecipe = await Recipe.findById(recipeId);
 
-  
+
   if (!favoriteRecipe) {
     throw HttpError(404);
   }
@@ -97,8 +97,8 @@ const addToFavorite = async (req, res) => {
   } else {
     favoriteRecipe = { ...favoriteRecipe, favorite: [userId] };
   }
-  
-  console.log(favoriteRecipe);
+
+    favoriteRecipe.glass = favoriteRecipe.glass.toLowerCase();
   await favoriteRecipe.save();
 
   res.json(favoriteRecipe);

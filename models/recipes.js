@@ -59,7 +59,7 @@ const recipeSchema = new Schema({
     glass: {
         type: String,
         required: [true, 'Set glass for drink'],
-        enum: glassesEnum,
+        enum: glassesEnum.map(glass => glass.toLowerCase())
     },
     description: {
         type: String,
