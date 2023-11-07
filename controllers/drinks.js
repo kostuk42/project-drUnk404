@@ -45,8 +45,8 @@ const getFilteredDrinks = async (req, res) => {
 
     if (query.search) {
         orConditions.push(
-            { drink: { $regex: query.search, $options: 'i' } },
-            { description: { $regex: query.search, $options: 'i' } },
+            { drink: { $regex: query.search.toLowerCase(), $options: 'i' } },
+            { description: { $regex: query.search.toLowerCase(), $options: 'i' } },
         );
     }
 
