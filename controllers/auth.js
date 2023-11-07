@@ -9,6 +9,7 @@ const { nanoid } = require("nanoid");
 
 const { BASE_URL } = process.env;
 
+const defaultAvatarPath = path.join(path.dirname(__dirname), "data", "defaultAvatar.png");
 const avatarsDir = path.join(__dirname, "../", "public", "avatars");
 
 const register = async (req, res) => {
@@ -27,7 +28,7 @@ const register = async (req, res) => {
   newUser.token = token;
   newUser.verificationToken = nanoid();
 
-  newUser.generateAvatar();
+  newUser.avatarURL = defaultAvatarPath
 
   await newUser.save();
 
