@@ -155,7 +155,7 @@ const getOwnRecipes = async (req, res) => {
 
   resultQuery.skip(cocktailsToSkip).limit(paginationLimit);
   const result = await resultQuery;
-  const total = await Recipe.count(findOptions);  
+  const total = await Recipe.count({ userId });  
 
   res.json({result, total});
 };
