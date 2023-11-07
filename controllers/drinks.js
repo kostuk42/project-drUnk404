@@ -145,10 +145,19 @@ const removeFromFavorite = async (req, res) => {
 };
 
 const getOwnRecipes = async (req, res) => {
-  console.log("here");
+  const {query} = req
   const { _id: userId } = req.user;
-  const result = await Recipe.find({ userId });
-  res.json(result);
+  const resultQuery = Recipe.find({ userId });
+
+  const paginationPage = query.page ? + query.page : 1;
+  const paginationLimit = query.limit ? + query.limit : 10;
+  const cocktailsToSkip = (paginationPage - 1) * paginationLimit;
+
+  resultQuery.skip(cocktailsToSkip).limit(paginationLimit);
+  const result = await resultQuery;
+  const total = await Recipe.count({ userId });  
+
+  res.json({result, total});
 };
 
 const removeOwnRecipe = async (req, res) => {
