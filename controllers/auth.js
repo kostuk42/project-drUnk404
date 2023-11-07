@@ -17,7 +17,6 @@ const register = async (req, res) => {
 
   if (user) throw HttpError(409, `Email ${email} in use`);
 
-  // create new user
   const newUser = new User({ username, email, birthDate });
   const token = jwt.sign({ _id: newUser._id }, process.env.SECRET_KEY, {
     expiresIn: "1h",
@@ -27,8 +26,6 @@ const register = async (req, res) => {
   newUser.token = token;
   newUser.verificationToken = nanoid();
 
-  newUser.generateAvatar();
-
   await newUser.save();
 
   res.status(201).json({
@@ -37,7 +34,6 @@ const register = async (req, res) => {
       username,
       email,
       birthDate,
-      avatarURL: newUser.avatarURL,
     },
   });
 };
