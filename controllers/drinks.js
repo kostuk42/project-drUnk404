@@ -183,7 +183,8 @@ const addOwnDrink = async (req, res) => {
         res.status(409).json({message: 'Drink already exists'})
         return
     }
-    const data = await Recipe.create({...req.body, userId, createdAt})
+    const glass = req.body.glass.toLowerCase();
+    const data = await Recipe.create({...req.body, userId, createdAt, glass});
     res.status(200).json({data})
 }
 
