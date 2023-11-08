@@ -9,7 +9,6 @@ const { nanoid } = require("nanoid");
 
 const { BASE_URL } = process.env;
 
-const defaultAvatarPath = path.join(path.dirname(__dirname), "data", "defaultAvatar.png");
 const avatarsDir = path.join(__dirname, "../", "public", "avatars");
 
 const register = async (req, res) => {
@@ -28,7 +27,7 @@ const register = async (req, res) => {
   newUser.token = token;
   newUser.verificationToken = nanoid();
 
-  newUser.avatarURL = defaultAvatarPath
+  newUser.avatarURL = 'https://res.cloudinary.com/dpwzetehz/image/upload/v1699438507/avatars/defaultAvatar1699438507077.png'
 
   await newUser.save();
 
