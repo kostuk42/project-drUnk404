@@ -1,95 +1,102 @@
-const { Recipe } = require('../models/recipes');
-const { ctrlWrapper, isUserAdult, HttpError } = require("../helpers")
+const { Recipe } = require("../models/recipes");
+const { ctrlWrapper, isUserAdult, HttpError } = require("../helpers");
 
 const getAllDrinksMainPage = async (req, res) => {
-    const birthDate = req.user.birthDate
-    const userIsAdult = isUserAdult(birthDate)
-    
-    const categories = await Recipe.distinct("category");
+  const birthDate = req.user.birthDate;
+  const userIsAdult = isUserAdult(birthDate);
 
-    const randomCocktails = [];
+  const categories = await Recipe.distinct("category");
 
-    for (const category of categories) {
-        const cocktails = await Recipe.aggregate([
-            { $match: userIsAdult ? { category: category } : { category: category, alcoholic: "Non alcoholic" } },
-        { $sample: { size: 3 } }
-        ]);
-        
+  const randomCocktails = [];
+
+  for (const category of categories) {
+    const cocktails = await Recipe.aggregate([
+      {
+        $match: userIsAdult
+          ? { category: category }
+          : { category: category, alcoholic: "Non alcoholic" },
+      },
+      { $sample: { size: 3 } },
+    ]);
+
     randomCocktails.push(...cocktails);
-}
-    const selectedCategories = ['Ordinary Drink', 'Cocktail', 'Shake', 'Other/Unknown'];
-    const categorizedCocktails = randomCocktails.reduce((acc, cocktail) => {
-        const { category } = cocktail;
-        if (!selectedCategories.includes(category)) {return acc}
-        if (!acc[category]) {
-            acc[category] = [];
-        }
-        acc[category].push(cocktail);
-        return acc;
-    }, {})
+  }
+  const selectedCategories = [
+    "Ordinary Drink",
+    "Cocktail",
+    "Shake",
+    "Other/Unknown",
+  ];
+  const categorizedCocktails = randomCocktails.reduce((acc, cocktail) => {
+    const { category } = cocktail;
+    if (!selectedCategories.includes(category)) {
+      return acc;
+    }
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(cocktail);
+    return acc;
+  }, {});
 
-    res.status(200).json(categorizedCocktails);
-}
+  res.status(200).json(categorizedCocktails);
+};
 
 const getFilteredDrinks = async (req, res) => {
-      const { query, user } = req;
-    const birthDate = user.birthDate;
-    const userIsAdult = isUserAdult(birthDate);
+  const { query, user } = req;
+  const birthDate = user.birthDate;
+  const userIsAdult = isUserAdult(birthDate);
 
-    const findOptions = userIsAdult ? {} : { alcoholic: "Non alcoholic" };
-    const orConditions = [];
+  const findOptions = userIsAdult ? {} : { alcoholic: "Non alcoholic" };
+  const orConditions = [];
 
-    if (query.ingredient) {
-        findOptions.ingredients = { $elemMatch: { title: query.ingredient } };
-    }
+  if (query.ingredient) {
+    findOptions.ingredients = { $elemMatch: { title: query.ingredient } };
+  }
 
-    if (query.search) {
-        orConditions.push(
-            { drink: { $regex: query.search.toLowerCase(), $options: 'i' } },
-            { description: { $regex: query.search.toLowerCase(), $options: 'i' } },
-        );
-    }
+  if (query.search) {
+    orConditions.push(
+      { drink: { $regex: query.search.toLowerCase(), $options: "i" } },
+      { description: { $regex: query.search.toLowerCase(), $options: "i" } }
+    );
+  }
 
-    if (query.category) {
-        findOptions.category = { $regex: query.category, $options: 'i' };
-    }
+  if (query.category) {
+    findOptions.category = { $regex: query.category, $options: "i" };
+  }
 
-    if (orConditions.length > 0) {
-        findOptions.$or = orConditions;
-    }
+  if (orConditions.length > 0) {
+    findOptions.$or = orConditions;
+  }
 
-    const dataQuery = Recipe.find(findOptions);
+  const dataQuery = Recipe.find(findOptions);
 
-    const paginationPage = query.page ? + query.page : 1;
-    const paginationLimit = query.limit ? + query.limit : 10;
-    const cocktailsToSkip = (paginationPage - 1) * paginationLimit;
+  const paginationPage = query.page ? +query.page : 1;
+  const paginationLimit = query.limit ? +query.limit : 10;
+  const cocktailsToSkip = (paginationPage - 1) * paginationLimit;
 
-    dataQuery.skip(cocktailsToSkip).limit(paginationLimit);
-    const data = await dataQuery;
-    const total = await Recipe.count(findOptions);
+  dataQuery.skip(cocktailsToSkip).limit(paginationLimit);
+  const data = await dataQuery;
+  const total = await Recipe.count(findOptions);
 
-    res.status(200).json({data, total})
-}
-
+  res.status(200).json({ data, total });
+};
 
 const getDrinkById = async (req, res) => {
-    const data = await Recipe.findById(req.params.id)
-    res.status(200).json({data})
-}
-
+  const data = await Recipe.findById(req.params.id);
+  res.status(200).json({ data });
+};
 
 const addToFavorite = async (req, res) => {
-
   const { id: recipeId } = req.body;
   const { _id: userId } = req.user;
 
   let favoriteRecipe = await Recipe.findById(recipeId);
 
-
   if (!favoriteRecipe) {
     throw HttpError(404);
   }
-  
+
   if (favoriteRecipe.favorite) {
     if (!favoriteRecipe.favorite.includes(userId)) {
       favoriteRecipe.favorite.push(userId);
@@ -98,7 +105,7 @@ const addToFavorite = async (req, res) => {
     favoriteRecipe = { ...favoriteRecipe, favorite: [userId] };
   }
 
-    favoriteRecipe.glass = favoriteRecipe.glass.toLowerCase();
+  favoriteRecipe.glass = favoriteRecipe.glass.toLowerCase();
   await favoriteRecipe.save();
 
   res.json(favoriteRecipe);
@@ -117,9 +124,11 @@ const getFavorite = async (req, res) => {
     limit,
   }).lean();
 
+  const hits = await Recipe.find({ favorite: _id });
+
   const totalHits = await Recipe.countDocuments({ favorite: _id });
 
-  res.json({ page: numberPage, limit: numberLimit, totalHits, result });
+  res.json({ page: numberPage, limit: numberLimit, totalHits, result, hits });
 };
 
 const removeFromFavorite = async (req, res) => {
@@ -145,19 +154,19 @@ const removeFromFavorite = async (req, res) => {
 };
 
 const getOwnRecipes = async (req, res) => {
-  const {query} = req
+  const { query } = req;
   const { _id: userId } = req.user;
   const resultQuery = Recipe.find({ userId });
 
-  const paginationPage = query.page ? + query.page : 1;
-  const paginationLimit = query.limit ? + query.limit : 10;
+  const paginationPage = query.page ? +query.page : 1;
+  const paginationLimit = query.limit ? +query.limit : 10;
   const cocktailsToSkip = (paginationPage - 1) * paginationLimit;
 
   resultQuery.skip(cocktailsToSkip).limit(paginationLimit);
   const result = await resultQuery;
-  const total = await Recipe.count({ userId });  
+  const total = await Recipe.count({ userId });
 
-  res.json({result, total});
+  res.json({ result, total });
 };
 
 const removeOwnRecipe = async (req, res) => {
@@ -179,39 +188,41 @@ const removeOwnRecipe = async (req, res) => {
 };
 
 const addOwnDrink = async (req, res) => {
-    console.log("req.body");
-    console.log(req.body);
-    const drinkThumb = req.file?.path;
-    if(drinkThumb){
-        req.body.drinkThumb = drinkThumb
-    }
-    const userId = req.user._id;
-    const createdAt = Date.now()
-    const drink = await Recipe.findOne({drink: req.body.drink});
-    if (drink) {
-        res.status(409).json({message: 'Drink already exists'})
-        return
-    }
-    const glass = req.body.glass.toLowerCase();
-    const data = await Recipe.create({...req.body, userId, createdAt, glass});
-    res.status(200).json({data})
-}
+  console.log("req.body");
+  console.log(req.body);
+  const drinkThumb = req.file?.path;
+  if (drinkThumb) {
+    req.body.drinkThumb = drinkThumb;
+  }
+  const userId = req.user._id;
+  const createdAt = Date.now();
+  const drink = await Recipe.findOne({ drink: req.body.drink });
+  if (drink) {
+    res.status(409).json({ message: "Drink already exists" });
+    return;
+  }
+  const glass = req.body.glass.toLowerCase();
+  const data = await Recipe.create({ ...req.body, userId, createdAt, glass });
+  res.status(200).json({ data });
+};
 
-const getPopularDrinks = async (req, res) =>{
-  const cocktails = await Recipe.find()
-  const sortedCocktails = cocktails.sort((a, b) => b.favorite.length - a.favorite.length);
-  res.status(200).json({sortedCocktails})
-}
+const getPopularDrinks = async (req, res) => {
+  const cocktails = await Recipe.find();
+  const sortedCocktails = cocktails.sort(
+    (a, b) => b.favorite.length - a.favorite.length
+  );
+  res.status(200).json({ sortedCocktails });
+};
 
 module.exports = {
-    getAllDrinksMainPage: ctrlWrapper(getAllDrinksMainPage),
-    getDrinkById: ctrlWrapper(getDrinkById),
-    getFilteredDrinks: ctrlWrapper(getFilteredDrinks),
-    addToFavorite: ctrlWrapper(addToFavorite),
-    getFavorite: ctrlWrapper(getFavorite),
-    removeFromFavorite: ctrlWrapper(removeFromFavorite),
-    getOwnRecipes: ctrlWrapper(getOwnRecipes),
-    removeOwnRecipe: ctrlWrapper(removeOwnRecipe),
-    addOwnDrink: ctrlWrapper(addOwnDrink),
-    getPopularDrinks: ctrlWrapper(getPopularDrinks),
-}
+  getAllDrinksMainPage: ctrlWrapper(getAllDrinksMainPage),
+  getDrinkById: ctrlWrapper(getDrinkById),
+  getFilteredDrinks: ctrlWrapper(getFilteredDrinks),
+  addToFavorite: ctrlWrapper(addToFavorite),
+  getFavorite: ctrlWrapper(getFavorite),
+  removeFromFavorite: ctrlWrapper(removeFromFavorite),
+  getOwnRecipes: ctrlWrapper(getOwnRecipes),
+  removeOwnRecipe: ctrlWrapper(removeOwnRecipe),
+  addOwnDrink: ctrlWrapper(addOwnDrink),
+  getPopularDrinks: ctrlWrapper(getPopularDrinks),
+};
