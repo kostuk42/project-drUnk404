@@ -188,8 +188,16 @@ const removeOwnRecipe = async (req, res) => {
 };
 
 const addOwnDrink = async (req, res) => {
-  console.log("req.body");
-  console.log(req.body);
+  const birthDate = req.user.birthDate;
+  const userIsAdult = isUserAdult(birthDate);
+
+  if (userIsAdult) {
+    res.status(403).json({
+      message: "You must be 18 years or older to add an alcoholic drink",
+    });
+    return;
+  }
+
   const drinkThumb = req.file?.path;
   if (drinkThumb) {
     req.body.drinkThumb = drinkThumb;
