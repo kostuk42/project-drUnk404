@@ -191,7 +191,7 @@ const addOwnDrink = async (req, res) => {
   const birthDate = req.user.birthDate;
   const userIsAdult = isUserAdult(birthDate);
 
-  if (userIsAdult) {
+  if (userIsAdult && req.body.alcoholic === "Alcoholic") {
     res.status(403).json({
       message: "You must be 18 years or older to add an alcoholic drink",
     });
